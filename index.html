@@ -19,8 +19,14 @@
 
 
     
-    <span>name:</span> <input id="creategroupvalue" /><button id="creategroup" >Join group</button>
-
+    <span>name:</span> <input id="creategroupvalue" /><button id="creategroup" >Create group</button> <br>
+    <span>name:</span> <input id="joingroupvalue" /><button id="joingroup" >Join group</button> <br>
+    <span>name:</span> <input id="startgamevalue" /><button id="startgame" >Start game</button> <br>
+    <span>name:</span> <input id="stopgamevalue" /><button id="stopgame" disabled>Stop game</button> <br>
+    <span>name:</span> <input id="reactgamevalue" /><button id="reactgame">React</button> <br>
+    
+    
+    
     <script src="/socket.io/socket.io.js"></script> 
     <script
     src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -29,20 +35,43 @@
     <script>
        
      $(function () {
+
         var socket = io();
         socket.on('connect', function(data) {
         socket.emit('join', 'Hello World from client');
+        
         
     });
      $('#creategroup').click(()=>{
       socket.emit('createGroup', $('#creategroupvalue').val());
      })
-          
-           
-        socket.on('chat message', function(msg){
+     $('#joingroup').click(()=>{
+      socket.emit('joinGroup', $('#joingroupvalue').val());
+     })     
+     $('#startgame').click(()=>{
+      socket.emit('startGame', $('#startgamevalue').val());
+      $('#startgame').attr('disabled',true);
+      $('#stopgame').removeAttr('disabled');
+     }) 
+     $('#stopgame').click(()=>{
+      socket.emit('stopGame', $('#stopgamevalue').val());
+      $('#stopgame').attr('disabled',true);
+      $('#startgame').removeAttr('disabled');
+     });
+     $('#reactgame').click(()=>{
+       socket.emit('reactGame', $('#reactgamevalue').val());
+
+     });
+     
+     
+        socket.on('chatMessage', function(msg){
             $('#messages').append($('<li>').text(msg));
         });
-        
+        socket.on('reactGame', function(msg){
+            $('#messages').append($('<li>').text(msg));
+        });
+
+
       });
   </script>
   </body>
