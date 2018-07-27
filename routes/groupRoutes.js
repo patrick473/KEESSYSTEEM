@@ -1,8 +1,8 @@
 const _ = require("lodash");
-const Groupfunctions = require("../models/Group");
-const Group = Groupfunctions.GroupClass;
-const groups = Groupfunctions.Groups;
-const addUserToGroup = Groupfunctions.addUserToGroup;
+const GroupMethods = require("../models/Group");
+const Group = GroupMethods.GroupClass;
+const groups = GroupMethods.Groups;
+const addUserToGroup = GroupMethods.addUserToGroup;
 
 newGroupID = 1;
 
@@ -14,31 +14,33 @@ module.exports = (client, io) => {
     newGroupID++;
     //later return group object
     message =
-      "you have created group :" + group.name +
-      " with accesscode :" + group.accessCode.toUpperCase();
+      "you have created group :" +
+      group.name +
+      " with accesscode :" +
+      group.accessCode.toUpperCase();
 
     io.to(client.id).emit("chatMessage", message);
   });
+
   client.on("joinGroup", data => {
-      console.log(data);
+    console.log(data);
     //join group, creator already joined
-    const group = addUserToGroup(client.id,data.toLowerCase());
-    
+    const group = addUserToGroup(client.id, data.toLowerCase());
+
     //check if group is found if so return message to user and groupleader
     //otherwise send message to user that accesscode is invalid
-    
-    if(group instanceof Group){
 
-    message =
-      "you have joined group " + group.name + " with id :" + group.groupID;
-    io.to(group.owner).emit("chatMessage", "A user has joined your group.");
-    io.to(client.id).emit("chatMessage", message);
-    
-    }
-    else{
-        io.to(client.id).emit("chatMessage",group)
+    if (group instanceof Group) {
+      message =
+        "you have joined group " + group.name + " with id :" + group.groupID;
+      io.to(group.owner).emit("chatMessage", "A user has joined your group.");
+      io.to(client.id).emit("chatMessage", message);
+    } else {
+      io.to(client.id).emit("chatMessage", group);
     }
   });
+
+
   client.on("startGame", data => {
     groupID = groups.findIndex(x => x.name == data);
     groups[groupID].gameRunning = true;
