@@ -16,10 +16,10 @@
   <body>
     <p>log</p>
     <ul id="messages"></ul>
-
+<br>
 
     
-    <span>name:</span> <input id="creategroupvalue" /><button id="creategroup" >Create group</button> <br>
+    <button id="creategroup" >Create group</button> <br>
     <span>access code:</span> <input id="joingroupvalue" /><button id="joingroup" >Join group</button> <br>
     <span>name:</span> <input id="startgamevalue" /><button id="startgame" >Start game</button> <br>
     <span>name:</span> <input id="stopgamevalue" /><button id="stopgame" disabled>Stop game</button> <br>
@@ -43,7 +43,7 @@
         
     });
      $('#creategroup').click(()=>{
-      socket.emit('createGroup', $('#creategroupvalue').val());
+      socket.emit('createGroup');
      })
      $('#joingroup').click(()=>{
       socket.emit('joinGroup', $('#joingroupvalue').val());

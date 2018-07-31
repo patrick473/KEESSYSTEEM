@@ -1,27 +1,21 @@
-let groups = [];
+const mongoose = require('mongoose');
+const {Schema} = mongoose;
 
-class Group {
-  constructor(groupID, name, owner) {
-    this.groupID = groupID;
-    this.name = name;
-    this.owner = owner;
-    this.users = [];
-    this.gameRunning = false;
-    this.reactableUser = "";
-    this.accessCode = generateAccescode();
-    this.addUser(owner);
+const userSchema = new Schema({id: String});
+const groupSchema = new Schema({
+    
+    owner: String,
+    users: [userSchema],
+    gameRunning: {type: Boolean, default: false},
+    reactableUser: {type:String, default: ''},
+    accessCode: String
+});
+groupSchema.pre('save', async function(){
+   this.accessCode = generateAccescode();
+   this.users = [{id:this.owner}];
+})
+mongoose.model('groups',groupSchema);
 
-    groups.push(this);
-  }
-  addUser(user) {
-    if (this.users.includes(user)) {
-      return false;
-    } else {
-      this.users.push(user);
-      return true;
-    }
-  }
-}
 
 function generateAccescode() {
   const length = 4;
@@ -33,23 +27,3 @@ function generateAccescode() {
   }
   return accessCode;
 }
-function addUserToGroup(user, accessCode) {
-  console.log(accessCode);
-  groupIndex = groups.findIndex(e => e.accessCode == accessCode);
-
-  if (groupIndex >= 0) {
-    success = groups[groupIndex].addUser(user);
-    if (success) {
-      return groups[groupIndex];
-    } else {
-      return "You are already in this group.";
-    }
-  } else {
-    return "We did not recognize this access code, please try again.";
-  }
-}
-module.exports = {
-  GroupClass: Group,
-  Groups: groups,
-  addUserToGroup: addUserToGroup
-};

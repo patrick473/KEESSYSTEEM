@@ -15,6 +15,7 @@
     "express": "^4.16.3",
     "http": "0.0.0",
     "lodash": "^4.17.10",
+    "mongoose": "^5.2.5",
     "nodemon": "^1.18.3",
     "socketio": "^1.0.0"
   }

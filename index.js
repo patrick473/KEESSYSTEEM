@@ -1,11 +1,13 @@
 const app = require('express')();
+const mongoose = require('mongoose');
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const bodyParser = require('body-parser');
-
-
+const keys = require('./config/keys');
+require('./models/Group');
+mongoose.connect(keys.mongoURI);
     
-    app.use(bodyParser.json());
+app.use(bodyParser.json());
   
 
 

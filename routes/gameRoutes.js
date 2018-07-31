@@ -1,5 +1,5 @@
 const GroupMethods = require("../models/Group");
-const Group = GroupMethods.GroupClass;
+
 const groups = GroupMethods.Groups;
 
 
@@ -7,7 +7,7 @@ module.exports = (client, io) => {
     //create gamegroup
   
     client.on("startGame", data => {
-      groupID = groups.findIndex(x => x.name == data);
+      index = groups.findIndex(x => x.groupID == data);
       groups[groupID].gameRunning = true;
       users = groups[groupID].users;
       users.forEach(user => {

@@ -1,44 +1,59 @@
+const mongoose = require('mongoose');
 const _ = require("lodash");
-const GroupMethods = require("../models/Group");
-const Group = GroupMethods.GroupClass;
-const groups = GroupMethods.Groups;
-const addUserToGroup = GroupMethods.addUserToGroup;
+const Group = mongoose.model('groups');
 
-newGroupID = 1;
 
-module.exports = (client, io) => {
+
+module.exports =  (client, io) => {
   //create gamegroup
 
-  client.on("createGroup", data => {
-    group = new Group(newGroupID, data, client.id);
-    newGroupID++;
+   client.on("createGroup", async data => {
+     const group = await new Group({
+      owner: client.id
+
+    }).save();
+    console.log(group);
+    
     //later return group object
     message =
-      "you have created group :" +
-      group.name +
-      " with accesscode :" +
+      
+     
+      " you have created a group with accesscode :" +
       group.accessCode.toUpperCase();
 
-    io.to(client.id).emit("chatMessage", message);
+    io.to(client.id).emit("chatMessage",{}, message);
+    
   });
 
-  client.on("joinGroup", data => {
-    console.log(data);
+  client.on("joinGroup",  data => {
+    
     //join group, creator already joined
-    const group = addUserToGroup(client.id, data.toLowerCase());
-
+    
+   
+    
+   Group.findOneAndUpdate({accessCode: data.toLowerCase()},
+   {"$push":{'users':{id:client.id} } },{new:true},(err,group)=>{
+        
+        if(err){
+       
+         return handleError(err);
+        }
+      
+       
+        console.log(group);
+        })
+      });
+     
     //check if group is found if so return message to user and groupleader
     //otherwise send message to user that accesscode is invalid
 
-    if (group instanceof Group) {
+   /*
       message =
-        "you have joined group " + group.name + " with id :" + group.groupID;
+        "you have joined group  with id :" + group.id
       io.to(group.owner).emit("chatMessage", "A user has joined your group.");
       io.to(client.id).emit("chatMessage", message);
-    } else {
-      io.to(client.id).emit("chatMessage", group);
-    }
-  });
+     */
+  
 
 
   client.on("startGame", data => {
@@ -79,4 +94,5 @@ module.exports = (client, io) => {
       "please react user:" + groups[id].reactableUser
     );
   }
+
 };
