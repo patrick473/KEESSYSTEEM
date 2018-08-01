@@ -9,10 +9,13 @@ module.exports = (client, io) => {
     const group = await new Group({
       owner: client.id
     }).save();
-   
 
     //later return group object
-    message =" you have created a group with accesscode :" +group.accessCode.toUpperCase() + " and id: "+group.id;
+    message =
+      " you have created a group with accesscode :" +
+      group.accessCode.toUpperCase() +
+      " and id: " +
+      group.id;
     io.to(client.id).emit("chatMessage", message);
   });
 
@@ -27,15 +30,13 @@ module.exports = (client, io) => {
         if (err) {
           return handleError(err);
         }
-        if(!group){
+        if (!group) {
           io.to(client.id).emit("chatMessage", "group not found.");
         }
-        message = "you have joined a group with the id :" + group.id
+        message = "you have joined a group with the id :" + group.id;
         io.to(group.owner).emit("chatMessage", "A user has joined your group.");
         io.to(client.id).emit("chatMessage", message);
-        
       }
     );
   });
-
 };
