@@ -11,7 +11,7 @@ app.use(bodyParser.json());
   
 
 
-    app.get('/', function(req, res){
+    app.get('/io', function(req, res){
         res.sendFile(__dirname + '/index.html');
         });
         io.on('connection', (client) =>{  
