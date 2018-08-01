@@ -23,8 +23,8 @@ app.use(bodyParser.json());
             client.on('disconnect', ()=>{
                 console.log('client disconnected')
             });
-            require('./routes/groupRoutes.js')(client,io);
-
+            require('./routes/groupRoutes')(client,io);
+            require('./routes/gameRoutes')(client,io);
         });
        
 

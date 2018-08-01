@@ -9,11 +9,11 @@ module.exports = (client, io) => {
     const group = await new Group({
       owner: client.id
     }).save();
-    console.log(group);
+   
 
     //later return group object
-    message =" you have created a group with accesscode :" +group.accessCode.toUpperCase() + " id: "+group.id;
-    io.to(client.id).emit("chatMessage", {}, message);
+    message =" you have created a group with accesscode :" +group.accessCode.toUpperCase() + " and id: "+group.id;
+    io.to(client.id).emit("chatMessage", message);
   });
 
   client.on("joinGroup", data => {
@@ -21,13 +21,16 @@ module.exports = (client, io) => {
 
     Group.findOneAndUpdate(
       { accessCode: data.toLowerCase() },
-      { $push: { users: { id: client.id } } },
+      { $push: { users: { socketID: client.id } } },
       { new: true },
       (err, group) => {
         if (err) {
           return handleError(err);
         }
-        message = "you have joined group  with id :" + group.id
+        if(!group){
+          io.to(client.id).emit("chatMessage", "group not found.");
+        }
+        message = "you have joined a group with the id :" + group.id
         io.to(group.owner).emit("chatMessage", "A user has joined your group.");
         io.to(client.id).emit("chatMessage", message);
         

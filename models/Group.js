@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
-const userSchema = new Schema({id: String});
+const userSchema = new Schema({socketID: String});
 const groupSchema = new Schema({
     
     owner: String,
@@ -12,7 +12,7 @@ const groupSchema = new Schema({
 });
 groupSchema.pre('save', async function(){
    this.accessCode = generateAccescode();
-   this.users = [{id:this.owner}];
+   this.users = [{socketID:this.owner}];
 })
 mongoose.model('groups',groupSchema);
 
