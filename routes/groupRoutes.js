@@ -6,6 +6,7 @@ module.exports = (client, io) => {
   //create gamegroup
 
   client.on("createGroup", async data => {
+    console.log('BEEL');
     const group = await new Group({
       owner: client.id
     }).save();
