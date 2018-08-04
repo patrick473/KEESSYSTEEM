@@ -11,9 +11,6 @@ app.use(bodyParser.json());
   
 
 
-    app.get('/', function(req, res){
-      
-        });
         io.on('connection', (client) =>{  
             console.log('Client connected...');
         

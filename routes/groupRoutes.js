@@ -12,12 +12,8 @@ module.exports = (client, io) => {
     }).save();
 
     //later return group object
-    message =
-      " you have created a group with accesscode :" +
-      group.accessCode.toUpperCase() +
-      " and id: " +
-      group.id;
-    io.to(client.id).emit("chatMessage", message);
+    
+    io.to(client.id).emit("createGroup", group);
   });
 
   client.on("joinGroup", data => {
