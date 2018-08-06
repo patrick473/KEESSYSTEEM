@@ -17,9 +17,13 @@ module.exports = (client, io) => {
         } else {
           group.users.forEach(user => {
             io.to(user.socketID).emit(
-              "chatMessage",
-              "game started with group:" + group.id
+              "startGame",
+              "game started" 
             );
+            io.to(client.id).emit(
+              "startGame",
+              "game started"
+            )
           });
           sendReaction(group.id);
         }
@@ -60,8 +64,12 @@ module.exports = (client, io) => {
           group.users.forEach(user => {
             io.to(user.socketID).emit(
               "stopGame",
-              "game ended with group:" + group.id
+              "game ended."
             );
+            io.to(client.id).emit(
+              "stopGame",
+              'game ended.'
+            )
           });
         }
       }
