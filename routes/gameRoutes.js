@@ -99,12 +99,16 @@ module.exports = (client, io) => {
           } else {
             let { reactableUser } = group;
             //convert to json
+            if(!reactableUser){
+              io.to(client.id).emit('startGameFailed','no one is in your group');
+            }else{
             reactableUser = convertreactableUser(reactableUser);
 
             io.to(reactableUser.socketID).emit(
               "reactGame",
               "please react, user:" + group.reactableUser
             );
+          }
           }
         });
       }
