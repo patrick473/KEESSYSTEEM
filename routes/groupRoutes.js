@@ -23,7 +23,7 @@ module.exports = (client, io) => {
       { $push: { users: { socketID: client.id } } },
       { new: true },
       (err, group) => {
-        if (err) {
+        if (err || !group) {
           io.to(client.id).emit("joinGroupFailed", "group not found");
         }else{
         
