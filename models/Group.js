@@ -12,7 +12,7 @@ const groupSchema = new Schema({
 });
 groupSchema.pre('save', async function(){
    this.accessCode = generateAccescode();
-   this.users = [{socketID:this.owner}];
+   this.users = [];
 })
 mongoose.model('groups',groupSchema);
 

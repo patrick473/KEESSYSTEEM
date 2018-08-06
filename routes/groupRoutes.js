@@ -17,7 +17,6 @@ module.exports = (client, io) => {
   });
 
   client.on("joinGroup", data => {
-    //join group, creator already joined
 
     Group.findOneAndUpdate(
       { accessCode: data.toLowerCase() },
@@ -25,14 +24,12 @@ module.exports = (client, io) => {
       { new: true },
       (err, group) => {
         if (err) {
-          return handleError(err);
+          io.to(client.id).emit("joinGroupFailed", "group not found");
+        }else{
+        
+        io.to(group.owner).emit("joinGroup", "A user has joined your group.");
+        io.to(client.id).emit("joinGroup", group);
         }
-        if (!group) {
-          io.to(client.id).emit("chatMessage", "group not found.");
-        }
-        message = "you have joined a group with the id :" + group.id;
-        io.to(group.owner).emit("chatMessage", "A user has joined your group.");
-        io.to(client.id).emit("chatMessage", message);
       }
     );
   });

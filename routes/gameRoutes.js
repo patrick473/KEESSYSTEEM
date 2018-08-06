@@ -30,7 +30,7 @@ module.exports = (client, io) => {
   client.on("reactGame", data => {
     Group.findById(data, (err, group) => {
       if (err) {
-        io.to(client.id).emit("chatMessage", "group not found.");
+        io.to(client.id).emit("reactGameFailed", "group not found.");
       } else {
         //console.log(client.id);
         let { reactableUser } = group;
@@ -39,7 +39,7 @@ module.exports = (client, io) => {
         if (reactableUser.socketID == client.id) {
           sendReaction(data);
         } else {
-          io.to(client.id).emit("chatMessage", "you shouldnt be reacting");
+          io.to(client.id).emit("reactGameFailed", "you shouldnt be reacting");
         }
       }
     });
@@ -55,11 +55,11 @@ module.exports = (client, io) => {
       { new: true },
       (err, group) => {
         if (err) {
-          io.to(client.id).emit("chatMessage", "group not found.");
+          io.to(client.id).emit("stopGameFailed", "group not found.");
         } else {
           group.users.forEach(user => {
             io.to(user.socketID).emit(
-              "chatMessage",
+              "stopGame",
               "game ended with group:" + group.id
             );
           });
@@ -81,13 +81,13 @@ module.exports = (client, io) => {
   async function sendReaction(id) {
     Group.findById(id, (err, group) => {
       if (err) {
-        io.to(client.id).emit("chatMessage", "group not found");
+        io.to(client.id).emit("reactGameFailed", "group not found");
       } else {
         randomUser = _.sample(group.users);
         group.reactableUser = randomUser;
         group.save(function(err, group) {
           if (err) {
-            io.to(client.id).emit("group not found");
+            io.to(client.id).emit("reactGameFailed","group not found");
           } else {
             let { reactableUser } = group;
             //convert to json
