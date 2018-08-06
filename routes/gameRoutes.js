@@ -38,14 +38,17 @@ module.exports = (client, io) => {
       } else {
         //console.log(client.id);
         let { reactableUser } = group;
+        if(reactableUser){
         reactableUser = convertreactableUser(reactableUser);
 
         if (reactableUser.socketID == client.id) {
+          io.to(client.id).emit("reactSuccess");
           sendReaction(data);
         } else {
           io.to(client.id).emit("reactGameFailed", "you shouldnt be reacting");
         }
       }
+    }
     });
   });
 
@@ -77,11 +80,12 @@ module.exports = (client, io) => {
   });
 
   function convertreactableUser(reactableUser) {
+    
     reactableUser = reactableUser.replace("_id:", '"_id":"');
     reactableUser = reactableUser.replace(",", '",');
     reactableUser = reactableUser.replace(/'/g, '"');
     reactableUser = reactableUser.replace("socketID", '"socketID"');
-
+    
     reactableUser = JSON.parse(reactableUser);
     return reactableUser;
   }
@@ -91,12 +95,16 @@ module.exports = (client, io) => {
       if (err) {
         io.to(client.id).emit("reactGameFailed", "group not found");
       } else {
+        console.log(group.users);
         randomUser = _.sample(group.users);
         group.reactableUser = randomUser;
-        group.save(function(err, group) {
+        Group.findByIdAndUpdate(id, group,{new:true},(err,group)=>{
+
+       
           if (err) {
             io.to(client.id).emit("reactGameFailed","group not found");
           } else {
+            
             let { reactableUser } = group;
             //convert to json
             if(!reactableUser){
