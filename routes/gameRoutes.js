@@ -64,16 +64,18 @@ module.exports = (client, io) => {
         if (err) {
           io.to(client.id).emit("stopGameFailed", "group not found.");
         } else {
+          if(group){
           group.users.forEach(user => {
             io.to(user.socketID).emit(
               "stopGame",
               "game ended."
             );
-            io.to(client.id).emit(
+          });
+          io.to(client.id).emit(
               "stopGame",
               'game ended.'
-            )
-          });
+            );
+          }
         }
       }
     );
