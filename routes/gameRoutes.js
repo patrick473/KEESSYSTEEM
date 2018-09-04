@@ -8,7 +8,7 @@ module.exports = (client, io) => {
 
   client.on("startGame", data => {
     Group.findByIdAndUpdate(
-      data,
+      data.groupid,
       { gameRunning: true },
       { new: true },
       (err, group) => {
@@ -20,11 +20,12 @@ module.exports = (client, io) => {
               "startGame",
               data 
             );
-            io.to(client.id).emit(
-              "startGame",
-              "game started"
-            )
+           
           });
+          io.to(client.id).emit(
+            "startGame",
+            "game started"
+          )
           sendReaction(group.id);
         }
       }
