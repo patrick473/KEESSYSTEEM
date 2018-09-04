@@ -43,6 +43,7 @@ module.exports = (client, io) => {
 
         if (reactableUser.socketID == client.id) {
           io.to(client.id).emit("reactSuccess");
+          setTimeout(2000);
           sendReaction(data);
         } else {
           io.to(client.id).emit("reactGameFailed", "you shouldnt be reacting");
