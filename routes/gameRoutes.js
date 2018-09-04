@@ -18,7 +18,7 @@ module.exports = (client, io) => {
           group.users.forEach(user => {
             io.to(user.socketID).emit(
               "startGame",
-              "game started" 
+              data 
             );
             io.to(client.id).emit(
               "startGame",
